@@ -7,6 +7,8 @@
  * and releases it under MIT style license. 
  */
 
+/* Yet to be done to handle those literals which contain CR */
+
 package jp.ac.rois.dbcls;
 
 import java.io.File;
@@ -104,6 +106,7 @@ public class TokenizeRDF {
 				if(next.getObject().getLiteralLanguage().length() > 0){
 					obj_type = 3;
 				}
+				obj_lexform = obj_lexform.replace('\n', ' ');
 			}
 			System.out.println("0" + "\t" + sbj_type + "\t" + sbj_lexform);
 			System.out.println("1" + "\t" + "1" + "\t" + next.getPredicate().getURI());
