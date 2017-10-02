@@ -15,15 +15,14 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.RDFLanguages;
 import org.apache.jena.riot.RiotNotFoundException;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 import org.apache.jena.riot.lang.PipedRDFStream;
 import org.apache.jena.riot.lang.PipedTriplesStream;
-
-import com.hp.hpl.jena.graph.Triple;
+import org.apache.jena.graph.Triple;
 
 public class TokenizeRDF {
 
@@ -57,7 +56,7 @@ public class TokenizeRDF {
 			return;
 		}
 		final String filename = args[idx];
-		final Lang inputformat = optmap.get(informat);
+		//final Lang inputformat = optmap.get(informat);
 
 		PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(buffersize);
 		final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
@@ -69,7 +68,8 @@ public class TokenizeRDF {
 			@Override
 			public void run() {
 				try{
-					RDFDataMgr.parse(inputStream, filename, "file:///", inputformat, null);
+					RDFParser.source(filename).parse(inputStream);
+					//RDFDataMgr.parse(inputStream, filename, "file:///", inputformat, null);
 				}
 				catch (RiotNotFoundException e){
 					System.err.println("File format error.");
