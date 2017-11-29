@@ -101,7 +101,7 @@ public class TokenizeRDF {
 				for (File f: fileList){
 					if(f.getName().startsWith("."))
 						continue;
-					System.out.println(f.getPath());
+					//System.out.println(f.getPath());
 					issuer(f.getPath());
 				}
 			}
