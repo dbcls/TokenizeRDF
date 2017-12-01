@@ -26,8 +26,10 @@ public class TokenizeRDF {
 
 	private static void issuer(String filename) {
 		final int buffersize = 100000;
+		final int pollTimeout = 1000; // Poll timeout in milliseconds
+		final int maxPolls = 1000; // Max poll attempts
 
-		PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(buffersize, false, 300, 1000);
+		PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(buffersize, true, pollTimeout, maxPolls);
 		final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
 
 		ExecutorService executor = Executors.newSingleThreadExecutor();
