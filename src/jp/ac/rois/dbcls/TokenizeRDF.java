@@ -16,18 +16,24 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.jena.riot.RDFParser;
+import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RiotNotFoundException;
+import org.apache.jena.riot.RiotParseException;
 import org.apache.jena.riot.lang.PipedRDFIterator;
 import org.apache.jena.riot.lang.PipedRDFStream;
 import org.apache.jena.riot.lang.PipedTriplesStream;
+import org.apache.jena.riot.system.ErrorHandlerFactory;
+import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.graph.Triple;
 
 public class TokenizeRDF {
 
+	static { LogCtl.setCmdLogging(); }
+
 	private static void issuer(String filename) {
 		final int buffersize = 100000;
-		final int pollTimeout = 1000; // Poll timeout in milliseconds
-		final int maxPolls = 1000; // Max poll attempts
+		final int pollTimeout = 300; // Poll timeout in milliseconds
+		final int maxPolls = 1000;    // Max poll attempts
 
 		PipedRDFIterator<Triple> iter = new PipedRDFIterator<Triple>(buffersize, true, pollTimeout, maxPolls);
 		final PipedRDFStream<Triple> inputStream = new PipedTriplesStream(iter);
@@ -38,11 +44,22 @@ public class TokenizeRDF {
 
 			@Override
 			public void run() {
+				RDFParser parser_object = RDFParserBuilder
+				.create()
+				.errorHandler(ErrorHandlerFactory.errorHandlerDetailed())
+				.source(filename)
+				.checking(true)
+				.build();
 				try{
-					RDFParser.source(filename).parse(inputStream);
+					parser_object.parse(inputStream);
+				}
+				catch (RiotParseException e){
+					System.err.println("Parse error [" + filename + "]: " + e.getMessage());
+					inputStream.finish();
 				}
 				catch (RiotNotFoundException e){
-					System.err.println("File format error.");
+					System.err.println("File format error [" + filename + "]: " + e.getMessage());
+					inputStream.finish();
 				}
 			}
 		};
@@ -103,7 +120,6 @@ public class TokenizeRDF {
 				for (File f: fileList){
 					if(f.getName().startsWith("."))
 						continue;
-					//System.out.println(f.getPath());
 					issuer(f.getPath());
 				}
 			}
