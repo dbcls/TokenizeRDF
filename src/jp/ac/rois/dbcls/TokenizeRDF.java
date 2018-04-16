@@ -31,6 +31,16 @@ public class TokenizeRDF {
 	static { LogCtl.setCmdLogging(); }
 
 	private static void issuer(String filename) {
+		File f = new File(filename);
+		if(f.isDirectory()){
+			File[] fileList = f.listFiles();
+			for (File ef: fileList){
+				if(ef.getName().startsWith("."))
+					continue;
+				issuer(ef.getPath());
+			}
+		}
+
 		System.err.println(filename);
 		final int buffersize = 100000;
 		final int pollTimeout = 300; // Poll timeout in milliseconds
@@ -116,7 +126,7 @@ public class TokenizeRDF {
 			System.out.println("Please specify the filename to be converted.");
 			return;
 		} else {
-			for (String arg:args) {
+			for (String arg: args) {
 				File file = new File(arg);
 				if(!file.exists() || !file.canRead()){
 					System.out.println("Can't read " + file);
@@ -124,13 +134,6 @@ public class TokenizeRDF {
 				}
 				if(file.isFile()){
 					issuer(arg);
-				}else if(file.isDirectory()){
-					File[] fileList = file.listFiles();
-					for (File f: fileList){
-						if(f.getName().startsWith("."))
-							continue;
-						issuer(f.getPath());
-					}
 				}
 			}
 		}
