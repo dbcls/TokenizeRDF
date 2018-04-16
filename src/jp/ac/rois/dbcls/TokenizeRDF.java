@@ -39,6 +39,7 @@ public class TokenizeRDF {
 					continue;
 				issuer(ef.getPath());
 			}
+			return;
 		}
 
 		System.err.println(filename);
