@@ -112,24 +112,25 @@ public class TokenizeRDF {
 
 	public static void main(String[] args) {
 
-		int idx = 0;
 		if(args.length == 0){
 			System.out.println("Please specify the filename to be converted.");
 			return;
 		} else {
-			File file = new File(args[idx]);
-			if(!file.exists() || !file.canRead()){
-				System.out.println("Can't read " + file);
-				return;
-			}
-			if(file.isFile()){
-				issuer(args[idx]);
-			}else if(file.isDirectory()){
-				File[] fileList = file.listFiles();
-				for (File f: fileList){
-					if(f.getName().startsWith("."))
-						continue;
-					issuer(f.getPath());
+			for (String arg:args) {
+				File file = new File(arg);
+				if(!file.exists() || !file.canRead()){
+					System.out.println("Can't read " + file);
+					return;
+				}
+				if(file.isFile()){
+					issuer(arg);
+				}else if(file.isDirectory()){
+					File[] fileList = file.listFiles();
+					for (File f: fileList){
+						if(f.getName().startsWith("."))
+							continue;
+						issuer(f.getPath());
+					}
 				}
 			}
 		}
