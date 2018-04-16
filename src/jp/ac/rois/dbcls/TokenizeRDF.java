@@ -132,9 +132,7 @@ public class TokenizeRDF {
 					System.out.println("Can't read " + file);
 					return;
 				}
-				if(file.isFile()){
-					issuer(arg);
-				}
+				issuer(arg);
 			}
 		}
 	}
