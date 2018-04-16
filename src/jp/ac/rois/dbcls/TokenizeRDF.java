@@ -31,7 +31,7 @@ public class TokenizeRDF {
 	static { LogCtl.setCmdLogging(); }
 
 	private static void issuer(String filename) {
-		System.out.println(filename);
+		System.err.println(filename);
 		final int buffersize = 100000;
 		final int pollTimeout = 300; // Poll timeout in milliseconds
 		final int maxPolls = 1000;    // Max poll attempts
